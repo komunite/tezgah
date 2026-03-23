@@ -1,14 +1,6 @@
-# Dockerfile
-FROM node:20-slim
-
+FROM node:18-alpine
 WORKDIR /app
-
-COPY . .
-
-RUN npm install -g .
-
-LABEL org.opencontainers.image.source="https://github.com/komunite/tezgah"
-LABEL org.opencontainers.image.description="Tezgah CLI ve production-ready SaaS skill kiti"
-LABEL org.opencontainers.image.licenses="MIT"
-
-ENTRYPOINT ["tezgah"]
+COPY package.json bin/ lib/ skills/ LICENSE README.md ./
+RUN ln -s /app/bin/tezgah.js /usr/local/bin/tezgah
+ENTRYPOINT ["node", "/app/bin/tezgah.js"]
+CMD ["help"]
