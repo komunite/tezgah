@@ -1,0 +1,35 @@
+name: Build and push Docker image
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/komunite/tezgah:latest
+          labels: |
+            org.opencontainers.image.source=https://github.com/komunite/tezgah
+            org.opencontainers.image.description=Tezgah CLI ve production-ready SaaS skill kiti
+            org.opencontainers.image.licenses=MIT
